@@ -1,1 +1,1 @@
-# spatial-comfort.github.io
+Official website for "Do Vision-Language Models Represent Space and How? Evaluating Spatial Frame of Reference under Ambiguities"

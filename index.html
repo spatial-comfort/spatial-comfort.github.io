@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="Consistent Multilingual Frame of Reference Test (COMFORT) is an evaluation protocol to systematically assess the spatial reasoning capabilities of VLMs.">
+  <meta property="og:title" content="Consistent Multilingual Frame of Reference Test"/>
+  <meta property="og:description" content="An evaluation protocol to systematically assess the spatial reasoning capabilities of VLMs"/>
+  <meta property="og:url" content="https://spatial-comfort.github.io"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <!-- <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/> -->
+
+
+  <meta name="twitter:title" content="Consistent Multilingual Frame of Reference Test">
+  <meta name="twitter:description" content="An evaluation protocol to systematically assess the spatial reasoning capabilities of VLMs">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <!-- <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image"> -->
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="Vision-Language Model, VLM, Spatial Reasoning, Multimodal Reasoning, Frame of Reference">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>Do Vision-Language Models Represent Space and How? Evaluating Spatial Frame of Reference Under Ambiguities</title>
+  <!-- <link rel="icon" type="image/x-icon" href="static/images/favicon.ico"> -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛋️</text></svg>">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+  <!-- <title>Table Example</title> -->
+  <style>
+      .video-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+      
+      .video-item {
+        flex: 1 1 calc(20% - 10px); /* 5 videos in one row with space */
+        margin: 5px;
+      }
+      
+      .video-item video {
+        width: 100%;
+        height: auto;
+      }
+
+      .image-grid {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .image-item {
+        width: 30%; /* Slightly less than 33.33% to account for margins */
+        margin: 1%;
+      }
+
+      .image-item img {
+        width: 100%;
+        height: auto;
+      }
+      
+      table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+          margin-left: auto;
+          margin-right: auto;
+      }
+
+      th, td {
+          padding: 12px;
+          border: 1px solid black;
+          text-align: center;
+      }
+
+      th {
+          background-color: #f2f2f2;
+          text-align: center;
+      }
+
+      .table-striped tbody tr:nth-of-type(odd) {
+          background-color: #f9f9f9;
+      }
+
+      .bold {
+          font-weight: bold; /* Make elements with this class bold */
+      }
+  </style>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">🛋️ Do Vision-Language Models Represent Space and How? Evaluating Spatial Frame of Reference Under Ambiguities</h1>
+            <h3 class="title is-4 publication-title">Consistent Multilingual Frame of Reference Test (COMFORT)</h3>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://cozheyuanzhangde.github.io/" target="_blank">Zheyuan Zhang</a><sup>*,1</sup>,</span>
+                <span class="author-block">
+                  <a href="https://sites.google.com/umich.edu/hufy" target="_blank">Fengyuan Hu</a><sup>*,1</sup>,</span>
+                  <span class="author-block">
+                    <a href="https://jayjunlee.github.io/" target="_blank">Jayjun Lee</a><sup>*,1</sup>,</span>
+                    <span class="author-block">
+                      </span> </div>
+                      <div class="is-size-5 publication-authors">
+                        <span class="'author-block">
+                      <a href="https://home.ttic.edu/~freda/" target="_blank">Freda Shi</a><sup>2,3</sup>,</span>
+                      <span class="author-block">
+                        <a href="https://www.cse.msu.edu/~kordjams/" target="_blank">Parisa Kordjamshidi</a><sup>4</sup>,</span>
+                        <span class="author-block">
+                          <a href="https://web.eecs.umich.edu/~chaijy/" target="_blank">Joyce Chai</a><sup>1</sup>,
+                          <span class="author-block">
+                            <a href="https://mars-tin.github.io/" target="_blank">Ziqiao Ma</a><sup>1</sup>,</span>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block"><sup>1</sup>University of Michigan <sup>2</sup>University of Waterloo <sup>3</sup>Vector Institute <sup>4</sup>Michigan State University </span>
+                    <span class="eql-cntrb"><small><br><sup>*</sup>Denotes Equal Contribution</small></span>
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+                    <!-- Supplementary PDF link
+                    <span class="link-block">
+                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Supplementary</span>
+                    </a>
+                  </span> -->
+
+                  <!-- Github link -->
+                  <span class="link-block">
+                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+      <video poster="" id="tree" autoplay controls muted loop width=70%>
+        <!-- Your video here -->
+        <source src="static/videos/teaser.mp4" type="video/mp4">
+      </video>
+      <br>
+      <h2 class="subtitle has-text-centered">
+        An evaluation protocol to systematically assess the spatial reasoning capabilities of VLMs.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Spatial expressions in situated communication can be ambiguous, as their meanings vary depending on the frames of reference (FoR) adopted by speakers and listeners. While spatial language understanding and reasoning by vision-language models (VLMs) have gained increasing attention, potential ambiguities in these models are still under-explored. To address this issue, we present the <u>CO</u>nsistent <u>M</u>ultilingual <u>F</u>rame <u>O</u>f <u>R</u>eference <u>T</u>est (COMFORT), an evaluation protocol to systematically assess the spatial reasoning capabilities of VLMs. We evaluate nine state-of-the-art VLMs using COMFORT. Despite showing some alignment with English conventions in resolving ambiguities, our experiments reveal significant shortcomings of VLMs: notably, the models (1) exhibit poor robustness and consistency, (2) lack the flexibility to accommodate multiple FoRs, and (3) fail to adhere to language-specific or culture-specific conventions in cross-lingual tests, as English tends to dominate other languages. With a growing effort to align vision-language models with human cognitive intuitions, we call for more attention to the ambiguous nature and cross-cultural diversity of spatial reasoning.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="subtitle is-4 has-text-centered">
+      <strong>COMFORT-BALL</strong>
+    </h2>
+    <div class="content has-text-justified">
+      <p>
+        The relatum is non-fronted, we focus on the ambiguity of FoR conventions associated with different languages. The split involves an observer's egocentric perception of a referent (e.g., a red ball) and a non-fronted relatum (e.g., a blue ball). We further randomize the dataset with object-level (colors, sizes, and shapes) and scene-level variations (camera positions and distractors) to consider more diverse yet reasonable settings.
+    </div>
+    <div class="video-grid">
+      <!-- Video 1 -->
+      <div class="video-item">
+        <video poster="" id="tree1" autoplay muted loop height="100%">
+          <source src="static/videos/simple_default.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 2 -->
+      <div class="video-item">
+        <video poster="" id="tree2" autoplay muted loop height="100%">
+          <source src="static/videos/simple_color.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 3 -->
+      <div class="video-item">
+        <video poster="" id="tree3" autoplay muted loop height="100%">
+          <source src="static/videos/simple_size.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 4 -->
+      <div class="video-item">
+        <video poster="" id="tree4" autoplay muted loop height="100%">
+          <source src="static/videos/simple_cam.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 5 -->
+      <div class="video-item">
+        <video poster="" id="tree5" autoplay muted loop height="100%">
+          <source src="static/videos/simple_distractor.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+    <br><br>
+    <h2 class="subtitle is-4 has-text-centered">
+      <strong>COMFORT-CAR</strong>
+    </h2>
+    <div class="content has-text-justified">
+      <p>
+        The relatum is fronted, multiple FoRs can be explicitly adopted to interpret the scene. A COMFORT-CAR image, therefore, involves the egocentric perception of a referent, a fronted relatum, and an additional human addressee. One can interpret the spatial relations using either the Camera, Addressee, or Relatum (C/A/R) as the origin to resolve the reference frame ambiguity. COMFORT-CAR has a set of 10 realistic objects in a typical household or outdoor scene, including horse, car, bench, laptop, rubber duck, chair, dog, sofa, bed, and bicycle, all of which have a clear semantic front. We use a basketball as the referent and vary the relatum. In addition to these objects, we include a human addressee in the scene. To disentangle different FoRs as much as possible, we let the addressee face right, and let the relatum face either left or right in the rendered images from the rendering camera's perspective.
+      </p>
+    </div>
+    <div class="video-grid">
+      <!-- Video 1 -->
+      <div class="video-item">
+        <video poster="" id="tree1" autoplay muted loop height="100%">
+          <source src="static/videos/hard_default.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 2 -->
+      <div class="video-item">
+        <video poster="" id="tree2" autoplay muted loop height="100%">
+          <source src="static/videos/hard_bicycle.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 3 -->
+      <div class="video-item">
+        <video poster="" id="tree3" autoplay muted loop height="100%">
+          <source src="static/videos/hard_bed.mp4" type="video/mp4">
+        </video>
+
+      </div>
+      <!-- Video 4 -->
+      <div class="video-item">
+        <video poster="" id="tree4" autoplay muted loop height="100%">
+          <source src="static/videos/hard_laptop.mp4" type="video/mp4">
+        </video>
+      </div>
+      <!-- Video 5 -->
+      <div class="video-item">
+        <video poster="" id="tree5" autoplay muted loop height="100%">
+          <source src="static/videos/hard_dog.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h1 class="title is-3 has-text-centered">Consistent Evaluation on Vision-Language Models</h1>
+      <br>
+      <div class="content has-text-justified">
+        <p>
+          The COMFORT framework enables us to investigate whether the internal representations of vision-language models (VLMs) encode spatial relations, and if they do, which underlying coordinate systems these representations capture. We show some sample plots below. The raw probability <i>p(θ)</i> in gray and normalized probability <i>p̂(θ)</i> in black, and reference probabilities <i>λ<sup>cos</sup>(θ)</i> in red.
+        </p>
+      </div>
+    <h2 class="subtitle is-4 has-text-centered">
+      <strong>COMFORT-BALL</strong>
+    </h2>
+    
+    <div class="image-grid">
+      <!-- Image 1 -->
+      <div class="image-item">
+        <img src="static/images/blip_7b_ball_left.webp" alt="Image 1">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; InstructBLIP-7B
+        </h2>
+      </div>
+      <!-- Image 2 -->
+      <div class="image-item">
+        <img src="static/images/llava_7b_ball_left.webp" alt="Image 2">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; &nbsp; LLaVA1.5-7B
+        </h2>
+      </div>
+      <!-- Image 3 -->
+      <div class="image-item">
+        <img src="static/images/gpt4o_ball_left.webp" alt="Image 3">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GPT-4o
+        </h2>
+      </div>
+    </div>
+    <br><br>
+    <h2 class="subtitle is-4 has-text-centered">
+      <strong>COMFORT-CAR</strong>
+    </h2>
+    <div class="image-grid">
+      <!-- Image 1 -->
+      <div class="image-item">
+        <img src="static/images/blip_7b_right_infrontof.webp" alt="Image 1">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; InstructBLIP-7B
+        </h2>
+      </div>
+      <!-- Image 2 -->
+      <div class="image-item">
+        <img src="static/images/llava_7b_car_right_infrontof.webp" alt="Image 2">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; &nbsp; LLaVA1.5-7B
+        </h2>
+      </div>
+      <!-- Image 3 -->
+      <div class="image-item">
+        <img src="static/images/gpt4o_car_right_infrontof.webp" alt="Image 3">
+        <h2 class="subtitle has-text-centered">
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; GPT-4o
+        </h2>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+<div class="container is-max-desktop">
+  <h1 class="title is-3  has-text-centered">Empirical Experiments and Main Findings</h1>
+  <h2 class="title is-4">Most VLMs Prefer Reflected Coordinate Transformation Convention</h2>
+  <div class="content has-text-justified">
+    <!-- NOTE: TABLE 2 from PAPER -->
+    <table border="1" cellpadding="5" cellspacing="0">
+      <tr>
+        <th rowspan="2">Model</th>
+        <th colspan="2">Back ε<sup>cos</sup>(↓)</th>
+        <th colspan="2">Front ε<sup>cos</sup>(↓)</th>
+        <th colspan="2">Left ε<sup>cos</sup>(↓)</th>
+        <th colspan="2">Right ε<sup>cos</sup>(↓)</th>
+        <th colspan="3">Aggregated</th>
+        <th rowspan="2">Preferred</th>
+      </tr>
+      <tr>
+        <th>Same</th>
+        <th><u><strong>Rev.</strong></u></th>
+        <th>Same</th>
+        <th><u><strong>Rev.</strong></u></th>
+        <th><u><strong>Same</strong></u></th>
+        <th>Rev.</th>
+        <th><u><strong>Same</strong></u></th>
+        <th>Rev.</th>
+        <th>Tran.</th>
+        <th>Rot.</th>
+        <th><u><strong>Ref.</strong></u></th>
+      </tr>
+      <tr>
+        <td>InstructBLIP-7B</td>
+        <td>45.6</td>
+        <td><strong>39.0</strong></td>
+        <td><strong>31.6</strong></td>
+        <td>52.0</td>
+        <td><strong>37.2</strong></td>
+        <td>48.0</td>
+        <td>47.5</td>
+        <td><strong>37.8</strong></td>
+        <td><strong>40.5</strong></td>
+        <td>44.2</td>
+        <td>43.9</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>InstructBLIP-13B</td>
+        <td><strong>40.9</strong></td>
+        <td>45.5</td>
+        <td>46.0</td>
+        <td><strong>37.4</strong></td>
+        <td><strong>43.4</strong></td>
+        <td>44.9</td>
+        <td>45.6</td>
+        <td><strong>41.6</strong></td>
+        <td>44.0</td>
+        <td><strong>42.3</strong></td>
+        <td>43.0</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>mBLIP</td>
+        <td><strong>51.2</strong></td>
+        <td>53.7</td>
+        <td>51.2</td>
+        <td><strong>47.9</strong></td>
+        <td><strong>52.4</strong></td>
+        <td>53.5</td>
+        <td>54.6</td>
+        <td><strong>46.8</strong></td>
+        <td>52.3</td>
+        <td><strong>50.5</strong></td>
+        <td>52.1</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>GLaMM</td>
+        <td>58.3</td>
+        <td><strong>33.3</strong></td>
+        <td>43.9</td>
+        <td><strong>42.9</strong></td>
+        <td><strong>38.3</strong></td>
+        <td>51.8</td>
+        <td><strong>17.3</strong></td>
+        <td>63.7</td>
+        <td>39.5</td>
+        <td>47.9</td>
+        <td><strong>33.0</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+      <tr>
+        <td>LLaVA-1.5-7B</td>
+        <td>54.0</td>
+        <td><strong>32.9</strong></td>
+        <td>59.1</td>
+        <td><strong>24.8</strong></td>
+        <td><strong>11.9</strong></td>
+        <td>70.0</td>
+        <td><strong>13.0</strong></td>
+        <td>68.5</td>
+        <td>34.5</td>
+        <td>49.0</td>
+        <td><strong>20.7</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+      <tr>
+        <td>LLaVA-1.5-13B</td>
+        <td>61.8</td>
+        <td><strong>19.2</strong></td>
+        <td>56.0</td>
+        <td><strong>27.7</strong></td>
+        <td><strong>31.7</strong></td>
+        <td>61.8</td>
+        <td><strong>24.3</strong></td>
+        <td>64.3</td>
+        <td>43.4</td>
+        <td>43.2</td>
+        <td><strong>25.7</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+      <tr>
+        <td>XComposer2</td>
+        <td>73.2</td>
+        <td><strong>17.9</strong></td>
+        <td>74.5</td>
+        <td><strong>20.7</strong></td>
+        <td><strong>20.1</strong></td>
+        <td>80.9</td>
+        <td><strong>21.3</strong></td>
+        <td>81.1</td>
+        <td>47.3</td>
+        <td>50.1</td>
+        <td><strong>20.0</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+      <tr>
+        <td>MiniCPM-V</td>
+        <td>70.9</td>
+        <td><strong>21.9</strong></td>
+        <td>64.3</td>
+        <td><strong>26.9</strong></td>
+        <td><strong>19.7</strong></td>
+        <td>74.1</td>
+        <td><strong>21.1</strong></td>
+        <td>73.3</td>
+        <td>44.0</td>
+        <td>49.1</td>
+        <td><strong>22.4</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+      <tr>
+        <td>GPT-4o</td>
+        <td>75.7</td>
+        <td><strong>28.2</strong></td>
+        <td>73.6</td>
+        <td><strong>32.0</strong></td>
+        <td><strong>24.3</strong></td>
+        <td>80.8</td>
+        <td><strong>25.1</strong></td>
+        <td>80.8</td>
+        <td>49.7</td>
+        <td>55.5</td>
+        <td><strong>27.4</strong></td>
+        <td><strong>Ref.</strong></u></td>
+      </tr>
+    </table>
+    <p><strong>Preferred coordinate transformation mapping from the egocentric viewer (camera) to the relatum in the relative FoR.</strong> The cosine region parsing errors &epsilon;<sup>cos</sup> are computed against both the <u>Same</u> and <u>Rev</u>ersed directions relative to the egocentric viewer's coordinate system. For example, native English speakers typically prefer a <u>Ref</u>lected transformation, which maintains the lateral (left/right) axis but reverses the sagittal (front/back) axis relative to the viewer. We determine the preferred transformation based on the aggregated performance, with &ldquo;&ndash;&rdquo; for no significant preference.
+    </p>
+    
+    
+
+    <h2 class="title is-4">Most VLMs Prefer Egocentric Relative Frame of Reference</h2>
+
+
+    <!-- NOTE: TABLE 3 from PAPER -->
+    <table border="1" cellspacing="0" cellpadding="5">
+      <tr>
+        <th rowspan="2">Model</th>
+        <th colspan="3">Back ε<sup>cos</sup> (↓)</th>
+        <th colspan="3">Front ε<sup>cos</sup> (↓)</th>
+        <th colspan="3">Left ε<sup>cos</sup> (↓)</th>
+        <th colspan="3">Right ε<sup>cos</sup> (↓)</th>
+        <th colspan="3">Aggregated</th>
+        <th rowspan="2">Prefer</th>
+      </tr>
+      <tr>
+        <th>Ego.</th><th>Int.</th><th>Add.</th>
+        <th>Ego.</th><th>Int.</th><th>Add.</th>
+        <th>Ego.</th><th>Int.</th><th>Add.</th>
+        <th>Ego.</th><th>Int.</th><th>Add.</th>
+        <th>Ego.</th><th>Int.</th><th>Add.</th>
+      </tr>
+      <tr>
+        <td>InstructBLIP-7B</td>
+        <td>41.0</td><td><strong>38.6</strong></td><td><strong>38.6</strong></td>
+        <td><strong>40.9</strong></td><td>46.9</td><td>46.9</td>
+        <td>45.6</td><td><strong>32.5</strong></td><td>51.9</td>
+        <td>39.6</td><td>51.2</td><td><strong>31.8</strong></td>
+        <td><strong>41.8</strong></td><td>42.3</td><td>42.3</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>InstructBLIP-13B</td>
+        <td><strong>32.9</strong></td><td>34.4</td><td>34.4</td>
+        <td>52.5</td><td><strong>48.5</strong></td><td><strong>48.5</strong></td>
+        <td>47.8</td><td>56.2</td><td><strong>27.8</strong></td>
+        <td>40.6</td><td><strong>27.6</strong></td><td>56.6</td>
+        <td>43.5</td><td><strong>41.7</strong></td><td>41.8</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>mBLIP-BLOOMZ</td>
+        <td><strong>52.2</strong></td><td>53.2</td><td>53.2</td>
+        <td>45.3</td><td><strong>44.6</strong></td><td><strong>44.6</strong></td>
+        <td>47.8</td><td><strong>47.6</strong></td><td>48.1</td>
+        <td>45.4</td><td>48.4</td><td><strong>42.4</strong></td>
+        <td>47.7</td><td>48.4</td><td><strong>47.1</strong></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>GLaMM</td>
+        <td><strong>28.0</strong></td><td>49.1</td><td>49.1</td>
+        <td><strong>30.0</strong></td><td>40.0</td><td>40.0</td>
+        <td><strong>14.0</strong></td><td>56.8</td><td>41.5</td>
+        <td><strong>13.7</strong></td><td>53.0</td><td>46.6</td>
+        <td><strong>21.4</strong></td><td>49.4</td><td>44.4</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+      <tr>
+        <td>LLaVA-1.5-7B</td>
+        <td><strong>20.9</strong></td><td>43.0</td><td>43.0</td>
+        <td>34.5</td><td><strong>32.6</strong></td><td><strong>32.6</strong></td>
+        <td><strong>13.4</strong></td><td>53.5</td><td>47.4</td>
+        <td><strong>14.3</strong></td><td>53.6</td><td>20.8</td>
+        <td><strong>20.8</strong></td><td>45.7</td><td>43.1</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+      <tr>
+        <td>LLaVA-1.5-13B</td>
+        <td><strong>31.9</strong></td><td>38.8</td><td>38.8</td>
+        <td><strong>24.8</strong></td><td>57.1</td><td>57.1</td>
+        <td><strong>11.7</strong></td><td>51.1</td><td>51.1</td>
+        <td><strong>27.5</strong></td><td>57.4</td><td>48.7</td>
+        <td><strong>24.0</strong></td><td>51.1</td><td>48.9</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+      <tr>
+        <td>XComposer2</td>
+        <td><strong>12.7</strong></td><td>49.3</td><td>49.3</td>
+        <td><strong>15.2</strong></td><td>48.3</td><td>48.3</td>
+        <td><strong>18.8</strong></td><td>61.2</td><td>53.5</td>
+        <td><strong>16.5</strong></td><td>58.4</td><td>15.8</td>
+        <td><strong>15.8</strong></td><td>54.5</td><td>51.4</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+      <tr>
+        <td>MiniCPM-V</td>
+        <td><strong>34.2</strong></td><td>40.7</td><td>40.7</td>
+        <td><strong>35.5</strong></td><td>53.4</td><td>53.4</td>
+        <td><strong>18.0</strong></td><td>53.9</td><td>53.9</td>
+        <td><strong>19.0</strong></td><td>58.1</td><td>26.7</td>
+        <td><strong>26.7</strong></td><td>51.5</td><td>51.3</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+      <tr>
+        <td>GPT-4o</td>
+        <td>38.3</td><td><strong>36.7</strong></td><td><strong>36.7</strong></td>
+        <td><strong>43.1</strong></td><td>50.2</td><td>50.2</td>
+        <td><strong>34.7</strong></td><td>59.3</td><td>56.5</td>
+        <td><strong>24.3</strong></td><td>57.3</td><td>35.1</td>
+        <td><strong>35.1</strong></td><td>50.9</td><td>51.3</td>
+        <td><u><strong>Ego.</strong></u></td>
+      </tr>
+    </table>
+    <p><strong>Preferred frame of reference in VLMs.</strong> Models' Cosine Region Parsing Errors &epsilon;<sup>cos</sup> are computed against the <u>Int</u>rinsic FoR (relatum origin), <u>Ego</u>centric relative FoR (camera origin), and <u>Add</u>ressee-centric relative FoR (addressee origin). English typically prefers an egocentric relative FoR. We determine the preferred FoR based on the aggregated performance, with &ldquo;-&rdquo; indicating no significant preference. </p>
+    
+
+    <h2 class="title is-4">VLMs Fail to Adopt Alternative Frames of Reference Flexibly</h2>
+    <!-- NOTE: TABLE 4 from PAPER -->
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th colspan="2">Egocentric</th>
+          <th colspan="2">Intrinsic</th>
+          <th colspan="2">Addressee</th>
+          <th colspan="2">Aggregated</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>Acc% (↑)</th>
+          <th>&#949;<sup>cos</sup><sub>×10<sup>2</sup></sub>(↓)</th>
+          <th>Acc% (↑)</th>
+          <th>&#949;<sup>cos</sup><sub>×10<sup>2</sup></sub>(↓)</th>
+          <th>Acc% (↑)</th>
+          <th>&#949;<sup>cos</sup><sub>×10<sup>2</sup></sub>(↓)</th>
+          <th>Acc% (↑)</th>
+          <th>&#949;<sup>cos</sup><sub>×10<sup>2</sup></sub>(↓)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>InstructBLIP-7B</td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.5<sub>(+1.7)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>42.3<sub>(+0.0)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.6<sub>(+1.3)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.1<sub>(+1.0)</sub></td>
+        </tr>
+        <tr>
+          <td>InstructBLIP-13B</td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.8<sub>(+0.3)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.2<sub>(+1.5)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>42.9<sub>(+1.1)</sub></td>
+          <td>47.2<sub>(+0.0)</sub></td>
+          <td>43.3<sub>(+0.0)</sub></td>
+        </tr>
+        <tr>
+          <td>mBLIP-BLOOMZ</td>
+          <td>51.9<sub>(−0.9)</sub></td>
+          <td>55.4<sub>(+7.7)</sub></td>
+          <td>49.8<sub>(−3.0)</sub></td>
+          <td>54.2<sub>(+5.8)</sub></td>
+          <td>49.6<sub>(−3.2)</sub></td>
+          <td>55.8<sub>(+8.7)</sub></td>
+          <td>50.4<sub>(−2.4)</sub></td>
+          <td>55.1<sub>(+7.4)</sub></td>
+        </tr>
+        <tr>
+          <td>GLaMM</td>
+          <td>47.2<sub>(−10.6)</sub></td>
+          <td>23.3<sub>(−0.7)</sub></td>
+          <td>47.2<sub>(+0.8)</sub></td>
+          <td><strong>44.2</strong><sub>(−6.9)</sub></td>
+          <td>47.2<sub>(−2.8)</sub></td>
+          <td>42.8<sub>(−6.1)</sub></td>
+          <td>47.2<sub>(−4.2)</sub></td>
+          <td>36.8<sub>(−4.6)</sub></td>
+        </tr>
+        <tr>
+          <td>LLaVA-1.5-7B</td>
+          <td>55.2<sub>(−2.6)</sub></td>
+          <td><strong>18.4</strong><sub>(−3.0)</sub></td>
+          <td>48.3<sub>(+4.7)</sub></td>
+          <td>45.7<sub>(−4.1)</sub></td>
+          <td>48.2<sub>(−5.0)</sub></td>
+          <td>43.4<sub>(−7.0)</sub></td>
+          <td>50.6<sub>(−1.0)</sub></td>
+          <td><strong>35.8</strong><sub>(−2.7)</sub></td>
+        </tr>
+        <tr>
+          <td>LLaVA-1.5-13B</td>
+          <td>51.6<sub>(−15.0)</sub></td>
+          <td>23.9<sub>(+3.1)</sub></td>
+          <td>47.3<sub>(+0.4)</sub></td>
+          <td>45.0<sub>(−7.0)</sub></td>
+          <td>47.5<sub>(−3.8)</sub></td>
+          <td><strong>38.9</strong><sub>(−4.2)</sub></td>
+          <td>48.8<sub>(−6.0)</sub></td>
+          <td>35.9<sub>(−6.2)</sub></td>
+        </tr>
+        <tr>
+          <td>XComposer2</td>
+          <td><strong>85.6</strong><sub>(−7.0)</sub></td>
+          <td>18.8<sub>(+3.0)</sub></td>
+          <td>51.0<sub>(+0.5)</sub></td>
+          <td>51.0<sub>(−3.3)</sub></td>
+          <td><strong>53.2</strong><sub>(−0.6)</sub></td>
+          <td>55.2<sub>(−6.6)</sub></td>
+          <td><strong>63.3</strong><sub>(−2.4)</sub></td>
+          <td>39.9<sub>(−0.6)</sub></td>
+        </tr>
+        <tr>
+          <td>MiniCPM-V</td>
+          <td>72.4<sub>(−4.8)</sub></td>
+          <td>24.6<sub>(−2.1)</sub></td>
+          <td>49.9<sub>(−0.3)</sub></td>
+          <td>47.8<sub>(−3.7)</sub></td>
+          <td>52.9<sub>(−0.5)</sub></td>
+          <td>45.1<sub>(−7.0)</sub></td>
+          <td>58.4<sub>(−2.6)</sub></td>
+          <td>39.2<sub>(−4.0)</sub></td>
+        </tr>
+        <tr>
+          <td>GPT-4o</td>
+          <td>78.3<sub>(+4.6)</sub></td>
+          <td>28.1<sub>(−7.0)</sub></td>
+          <td><strong>53.4</strong><sub>(−1.9)</sub></td>
+          <td>44.6<sub>(−6.3)</sub></td>
+          <td>49.1<sub>(−5.7)</sub></td>
+          <td>44.9<sub>(−6.4)</sub></td>
+          <td>60.3<sub>(−1.0)</sub></td>
+          <td>39.2<sub>(−6.6)</sub></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      <strong>The accuracy and cosine region parsing errors of VLMs with explicitly prompted to follow each frame of reference are provided (<code>cam</code>/<code>rel</code>/<code>add</code>).</strong> The values in parentheses indicate the performance change relative to the scenario with no perspective (<code>nop</code>) prompting.
+    </p>
+    
+
+    <h2 class="title is-4">Spatial Representations in VLMs are Not Robust and Consistent</h2>
+    <!-- NOTE: TABLE 5 from PAPER -->
+    <table border="1" cellpadding="5">
+      <thead>
+        <tr>
+          <th rowspan="2">Model</th>
+          <th colspan="2">Obj F1 (↑)</th>
+          <th colspan="2">Acc% (↑)</th>
+          <th colspan="2">ε<sup>cos</sup> ×10² (↓)</th>
+          <th colspan="2">ε<sup>hemi</sup> ×10² (↓)</th>
+          <th colspan="2">σ ×10² (↓)</th>
+          <th colspan="2">η ×10² (↓)</th>
+          <th colspan="2">c<sup>sym</sup> ×10² (↓)</th>
+          <th colspan="2">c<sup>opp</sup> ×10² (↓)</th>
+        </tr>
+        <tr>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+          <th>BALL</th>
+          <th>CAR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>InstructBLIP-7B</td>
+          <td style="color: red;">66.7</td>
+          <td style="color: red;">66.7</td>
+          <td>47.2</td>
+          <td>47.2</td>
+          <td>43.9</td>
+          <td>43.5</td>
+          <td>57.8</td>
+          <td>56.4</td>
+          <td>26.7</td>
+          <td>30.5</td>
+          <td>48.4</td>
+          <td>43.4</td>
+          <td>17.2</td>
+          <td>16.9</td>
+          <td>16.6</td>
+          <td>22.6</td>
+        </tr>
+        <tr>
+          <td>InstructBLIP-13B</td>
+          <td style="color: red;">67.3</td>
+          <td style="color: red;">50.3</td>
+          <td>47.2</td>
+          <td>47.2</td>
+          <td>43.0</td>
+          <td>43.8</td>
+          <td>55.5</td>
+          <td>55.9</td>
+          <td>27.1</td>
+          <td>36.8</td>
+          <td>48.2</td>
+          <td>46.4</td>
+          <td>17.3</td>
+          <td>17.0</td>
+          <td>21.0</td>
+          <td>21.9</td>
+        </tr>
+        <tr>
+          <td>mBLIP-BLOOMZ</td>
+          <td>99.1</td>
+          <td style="color: red;">33.3</td>
+          <td>47.5</td>
+          <td>51.9</td>
+          <td>52.1</td>
+          <td>55.4</td>
+          <td>62.1</td>
+          <td>65.6</td>
+          <td>43.7</td>
+          <td>48.6</td>
+          <td>54.1</td>
+          <td>60.7</td>
+          <td>29.1</td>
+          <td>30.1</td>
+          <td>33.8</td>
+          <td>42.0</td>
+        </tr>
+        <tr>
+          <td>GLaMM</td>
+          <td>100.0</td>
+          <td>99.8</td>
+          <td>47.2</td>
+          <td>47.2</td>
+          <td>33.0</td>
+          <td>23.3</td>
+          <td>45.2</td>
+          <td>37.6</td>
+          <td>29.9</td>
+          <td>23.4</td>
+          <td>45.0</td>
+          <td>28.4</td>
+          <td>10.1</td>
+          <td>9.4</td>
+          <td>13.7</td>
+          <td>14.6</td>
+        </tr>
+        <tr>
+          <td>LLAVA-1.5-7B</td>
+          <td>100.0</td>
+          <td>88.6</td>
+          <td>63.2</td>
+          <td>55.2</td>
+          <td>20.7</td>
+          <td><strong>18.4</strong></td>
+          <td>33.7</td>
+          <td>32.5</td>
+          <td>25.2</td>
+          <td>20.0</td>
+          <td>23.5</td>
+          <td><strong>21.8</strong></td>
+          <td><strong>5.8</strong></td>
+          <td><strong>5.4</strong></td>
+          <td><strong>8.3</strong></td>
+          <td><strong>10.7</strong></td>
+        </tr>
+        <tr>
+          <td>LLAVA-1.5-13B</td>
+          <td>100.0</td>
+          <td>98.6</td>
+          <td>55.3</td>
+          <td>51.6</td>
+          <td>25.7</td>
+          <td>23.8</td>
+          <td>37.6</td>
+          <td>37.1</td>
+          <td>19.3</td>
+          <td>20.8</td>
+          <td>24.9</td>
+          <td>29.9</td>
+          <td>7.0</td>
+          <td>5.8</td>
+          <td>9.3</td>
+          <td>10.8</td>
+        </tr>
+        <tr>
+          <td>XComposer2</td>
+          <td>100.0</td>
+          <td>95.3</td>
+          <td><strong>92.4</strong></td>
+          <td><strong>85.6</strong></td>
+          <td><strong>20.0</strong></td>
+          <td>18.8</td>
+          <td><strong>21.1</strong></td>
+          <td><strong>26.3</strong></td>
+          <td><strong>19.2</strong></td>
+          <td><strong>15.3</strong></td>
+          <td><strong>13.7</strong></td>
+          <td>22.9</td>
+          <td>9.0</td>
+          <td>6.5</td>
+          <td>10.5</td>
+          <td>12.0</td>
+        </tr>
+        <tr>
+          <td>MiniCPM-V</td>
+          <td style="color: red;">66.8</td>
+          <td>81.5</td>
+          <td>81.0</td>
+          <td>72.4</td>
+          <td>32.4</td>
+          <td>24.6</td>
+          <td>32.8</td>
+          <td>35.8</td>
+          <td>19.2</td>
+          <td><strong>19.2</strong></td>
+          <td>29.8</td>
+          <td>22.7</td>
+          <td>10.1</td>
+          <td>9.2</td>
+          <td>12.4</td>
+          <td>14.9</td>
+        </tr>
+        <tr>
+          <td>GPT-4o</td>
+          <td>100.0</td>
+          <td>94.5</td>
+          <td>89.2</td>
+          <td>78.3</td>
+          <td>27.4</td>
+          <td>28.1</td>
+          <td>27.5</td>
+          <td>35.0</td>
+          <td>20.9</td>
+          <td>24.0</td>
+          <td>43.1</td>
+          <td>38.8</td>
+          <td>14.1</td>
+          <td>13.3</td>
+          <td>14.2</td>
+          <td>16.7</td>
+        </tr>
+        <tr>
+          <td>Random (30 trials)</td>
+          <td colspan="2" style="text-align: center;">50.0</td>
+          <td colspan="2" style="text-align: center;">50.9</td>
+          <td colspan="2" style="text-align: center;">46.3</td>
+          <td colspan="2" style="text-align: center;">58.7</td>
+          <td colspan="2" style="text-align: center;">28.3</td>
+          <td colspan="2" style="text-align: center;">26.6</td>
+          <td colspan="2" style="text-align: center;">42.5</td>
+          <td colspan="2" style="text-align: center;">44.2</td>
+        </tr>
+        <tr>
+          <td>Always “Yes”</td>
+          <td colspan="2" style="text-align: center;">50.0</td>
+          <td colspan="2" style="text-align: center;">47.2</td>
+          <td colspan="2" style="text-align: center;">61.2</td>
+          <td colspan="2" style="text-align: center;">68.7</td>
+          <td colspan="2" style="text-align: center;">0.0</td>
+          <td colspan="2" style="text-align: center;">0.0</td>
+          <td colspan="2" style="text-align: center;">0.0</td>
+          <td colspan="2" style="text-align: center;">100.0</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>A comprehensive evaluation of VLMs in egocentric relative FoR with reflected transformation, using an explicit camera perspective (<code>cam</code>) prompt, is conducted.</strong> The metrics considered include object hallucination (F1-score), accuracy (Acc), region parsing error (&epsilon;), prediction noise (&eta;), standard deviation (&sigma;), and consistency (c).</p>  
+
+  </div>
+</div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="content has-text-justified">
+
+      <h2 class="title is-4">Multilingual VLMs are not faithfully following the preferences and conventions (associated with different languages) to select the FoR.</h2>
+      <!-- NOTE: TABLE 6 from PAPER -->
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr style="border-bottom: 2px solid #000;">
+                <th colspan="2" style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>Language</strong></th>
+                <th style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>English</strong></th>
+                <th style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>Tamil</strong></th>
+                <th style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>Hausa</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2" style="border: 1px solid #000; text-align: center; padding: 5px;">Intrinsic</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">50.9</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">52.0</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">54.0</td>
+            </tr>
+            <tr style="border-top: 2px solid #000;">
+                <td rowspan="3" style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Rel</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ref.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;"><u><strong>35.8</strong></u></td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>40.4</strong></td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;"><strong>41.0</strong></td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Rot.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">57.3</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;"><u>55.2</u></td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">56.1</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Tran.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">53.7</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">51.1</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;"><u>53.0</u></td>
+            </tr>
+            <tr style="border-top: 2px solid #000;">
+                <td rowspan="3" style="border: 1px solid #000; text-align: center; padding: 5px;">Add-Rel</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ref.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">58.8</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">52.2</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">52.8</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Rot.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">51.3</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">52.9</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">55.3</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Tran.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">56.1</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">56.1</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">56.1</td>
+            </tr>
+            <tr style="border-top: 2px solid #000;">
+                <td colspan="2" style="border: 1px solid #000; text-align: center; padding: 5px;">GPT-4o Prefer</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Ref.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Ref.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Ref.</td>
+            </tr>
+            <tr style="border-bottom: 2px solid #000;">
+                <td colspan="2" style="border: 1px solid #000; text-align: center; padding: 5px;">Human Prefer</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Ref.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Rot.</td>
+                <td style="border: 1px solid #000; text-align: center; padding: 5px;">Ego-Trans.</td>
+            </tr>
+        </tbody>
+    </table>
+    <figure>
+      <img src="./static/images/world-map.webp" alt="world_map_multilingual" width="700">
+    </figure>
+    <p><strong>A visualization of the world map that displays the preference of each region for using the intrinsic FoR over the relative FoR.</strong> The plot is based on the top three spoken languages in each region, as reported by The World Factbook (Central Intelligence Agency, 2009), and averages the cosine parsing error (ε<sup>cos</sup>, ↓), weighted by the speaking population. We present a quantitative comparison of English, Tamil, and Hausa, with the best-performing FoR marked in bold and the convention preferred by human speakers underlined.</p> 
+    </div>
+  </div>
+</section>
+
+
+<!-- </body> -->
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>BibTex Code Here</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
